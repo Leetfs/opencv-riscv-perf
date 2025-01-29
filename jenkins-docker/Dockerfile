@@ -33,5 +33,9 @@ RUN curl -fL https://github.com/riscv-collab/riscv-gnu-toolchain/releases/downlo
     tar -xf /tmp/riscv64-toolchain.tar.xz -C /opt/ && \
     rm /tmp/riscv64-toolchain.tar.xz
 
+# RUN curl -fL https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2025.01.20/riscv64-musl-ubuntu-22.04-gcc-nightly-2025.01.20-nightly.tar.xz -o /tmp/riscv64-toolchain.tar.xz && \
+#     tar -xf /tmp/riscv64-toolchain.tar.xz -C /opt/ && \
+#     rm /tmp/riscv64-toolchain.tar.xz
+
 # 设置交叉编译工具链路径
 ENV PATH=/opt/riscv/bin:$PATH
