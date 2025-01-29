@@ -24,6 +24,33 @@ pipeline {
             }
         }
 
+        stage('Build OpenCV for RISC-V Vector') {
+            agent {
+                label 'master'
+            }
+            steps {
+                script {
+                    // 配置交叉编译工具链并开始构建
+                    sh '''
+                        cd ./opencv && mkdir build-Vector && cd build-Vector
+                        cmake -D CMAKE_BUILD_TYPE=Release \
+                        -D CMAKE_CXX_FLAGS="-static -O3 -march=rv64imafdcv" \
+                        -D CMAKE_C_FLAGS="-static -O3 -march=rv64imafdcv" \
+                        -D ENABLE_PERF_TESTS=ON \
+                        -D WITH_EIGEN=ON \
+                        -D CMAKE_INSTALL_PREFIX=./install \
+                        -D CMAKE_TOOLCHAIN_FILE=../../perf/toolchain-riscv64.cmake \
+                        -D BUILD_TESTS=ON \
+                        -D BUILD_EXAMPLES=OFF \
+                        -D BUILD_DOCS=OFF \
+                        -D BUILD_opencv_core=ON \
+                        -D BUILD_opencv_imgproc=ON ..
+                        make opencv_perf_core opencv_perf_imgproc -j $(nproc)
+                    '''
+                }
+            }
+        }
+        
         stage('Build OpenCV for RISC-V') {
             agent {
                 label 'master'
@@ -34,6 +61,8 @@ pipeline {
                     sh '''
                         cd ./opencv && mkdir build && cd build
                         cmake -D CMAKE_BUILD_TYPE=Release \
+                        -D CMAKE_CXX_FLAGS="-static -O3 -march=rv64imafdc" \
+                        -D CMAKE_C_FLAGS="-static -O3 -march=rv64imafdc" \
                         -D ENABLE_PERF_TESTS=ON \
                         -D WITH_EIGEN=ON \
                         -D CMAKE_INSTALL_PREFIX=./install \
