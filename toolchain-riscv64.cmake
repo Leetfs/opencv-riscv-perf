@@ -20,6 +20,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 # 使用静态链接
 set(CMAKE_EXE_LINKER_FLAGS "-static")
-set(CMAKE_CXX_FLAGS "-static -O3") #启用优化
-set(CMAKE_C_FLAGS "-static -O3")
+# set(CMAKE_CXX_FLAGS "-static -O3") #启用优化
+# set(CMAKE_C_FLAGS "-static -O3")
 set(BUILD_SHARED_LIBS OFF)
