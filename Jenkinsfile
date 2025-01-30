@@ -1,7 +1,7 @@
 pipeline {
     agent none  // 不指定全局 agent
     stages {
-        stage('Clean Workspace') {
+        stage('Clean master Workspace') {
             agent {
                 label 'master'
             }
@@ -32,7 +32,7 @@ pipeline {
                 script {
                     // 配置交叉编译工具链并开始构建
                     sh '''
-                        cd ./opencv && mkdir build-Vector && cd build-Vector
+                        cd ./opencv && mkdir build-vector && cd build-vector
                         cmake -D CMAKE_BUILD_TYPE=Release \
                         -D CMAKE_CXX_FLAGS="-static -O3 -march=rv64imafdcv" \
                         -D CMAKE_C_FLAGS="-static -O3 -march=rv64imafdcv" \
@@ -77,30 +77,81 @@ pipeline {
                 }
             }
         }
-
-        // stage('Run Performance Tests') {
-        //     agent {
-        //         label 'RVV'  // 在 RVV 节点上运行
-        //     }
-        //     steps {
-        //         script {
-        //             // 运行性能测试
-        //             sh 'opencv_perf_core'  // 运行 Core 模块性能测试
-        //             sh 'opencv_perf_imgproc'  // 运行 ImgProc 模块性能测试
-        //         }
-        //     }
-        // }
-
-        // stage('Clean Up') {
-        //     agent {
-        //         label 'master'  // 在 master 节点上运行清理工作
-        //     }
-        //     steps {
-        //         script {
-        //             // 清理克隆的源代码
-        //             // sh 'rm -rf /opencv'
-        //         }
-        //     }
-        // }
+        
+        stage('stash') {
+            agent {
+                label 'master'
+            }
+            steps {
+                script {
+                    stash name: 'buildFiles', includes: 'opencv/build/bin/*,opencv/build-vector/bin/*'
+                }
+            }
+        }
+        
+        stage('Clean RVV Workspace') {
+            agent {
+                label 'RVV'
+            }
+            steps {
+                script {
+                    // 清空工作区
+                    deleteDir()
+                }
+            }
+        }
+        
+        stage('unstash') {
+            agent {
+                label 'RVV'
+            }
+            steps {
+                script {
+                    unstash 'buildFiles'
+                }
+            }
+        }
+        
+        stage('RV Perf Test') {
+            agent {
+                label 'RVV'
+            }
+            steps {
+                script {
+                    sh '''
+                        cd ./opencv/build/bin/
+                        
+                        chmod +x opencv_perf_core
+                        ./opencv_perf_core --gtest_filter="*Abs*"
+                        ./opencv_perf_core --gtest_filter="*Mul*"
+                        
+                        chmod +x opencv_perf_imgproc
+                        ./opencv_perf_imgproc --gtest_filter="*Resize*"
+                        ./opencv_perf_imgproc --gtest_filter="*Bilateral*"
+                    '''
+                }
+            }
+        }
+        
+        stage('RVV Perf Test') {
+            agent {
+                label 'RVV'
+            }
+            steps {
+                script {
+                    sh '''
+                        cd ./opencv/build-vector/bin/
+                        
+                        chmod +x opencv_perf_core
+                        ./opencv_perf_core --gtest_filter="*Abs*"
+                        ./opencv_perf_core --gtest_filter="*Mul*"
+                        
+                        chmod +x opencv_perf_imgproc
+                        ./opencv_perf_imgproc --gtest_filter="*Resize*"
+                        ./opencv_perf_imgproc --gtest_filter="*Bilateral*"
+                    '''
+                }
+            }
+        }
     }
 }
