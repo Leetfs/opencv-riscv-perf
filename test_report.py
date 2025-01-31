@@ -89,7 +89,7 @@ def compare_reports(rv_file, rvv_file, group_name):
 
     return comparison_results
 
-def generate_html(comparisons, output_path="../output/test_report.html"):
+def generate_html(comparisons, output_path="test_report.html"):
     """
     生成 HTML 格式的性能对比报告
 
@@ -176,10 +176,10 @@ def generate_comparison_report():
     生成完整的 OpenCV 性能对比报告
     """
     test_report_pairs = [
-        ("../output/RV_core_Abs_test_report.json", "../output/RVV_core_Abs_test_report.json", "opencv_perf_core"),
-        ("../output/RV_core_Mul_test_report.json", "../output/RVV_core_Mul_test_report.json", "opencv_perf_core"),
-        ("./output/RV_imgproc_Bilateral_test_report.json", "../output/RVV_imgproc_Bilateral_test_report.json", "opencv_perf_imgproc"),
-        ("../output/RV_imgproc_Resize_test_report.json", "../output/RVV_imgproc_Resize_test_report.json", "opencv_perf_imgproc"),
+        ("./output/RV_core_Abs_test_report.json", "./output/RVV_core_Abs_test_report.json", "opencv_perf_core"),
+        ("./output/RV_core_Mul_test_report.json", "./output/RVV_core_Mul_test_report.json", "opencv_perf_core"),
+        ("./output/RV_imgproc_Bilateral_test_report.json", "./output/RVV_imgproc_Bilateral_test_report.json", "opencv_perf_imgproc"),
+        ("./output/RV_imgproc_Resize_test_report.json", "./output/RVV_imgproc_Resize_test_report.json", "opencv_perf_imgproc"),
     ]
 
     all_comparisons = []

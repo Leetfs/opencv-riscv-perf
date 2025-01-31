@@ -16,7 +16,7 @@ pipeline {
             }
             steps {
                 sh 'git clone https://github.mtftm.com/opencv/opencv.git ./opencv'
-                sh 'git clone https://github.mtftm.com/Leetfs/opencv-riscv-perf.git ./perf'
+                // sh 'git clone https://github.mtftm.com/Leetfs/opencv-riscv-perf.git ./perf'
             }
         }
 
@@ -33,7 +33,7 @@ pipeline {
                         -D ENABLE_PERF_TESTS=ON \
                         -D WITH_EIGEN=ON \
                         -D CMAKE_INSTALL_PREFIX=./install \
-                        -D CMAKE_TOOLCHAIN_FILE=../../perf/toolchain-riscv64.cmake \
+                        -D CMAKE_TOOLCHAIN_FILE=../../toolchain-riscv64.cmake \
                         -D BUILD_TESTS=ON \
                         -D BUILD_EXAMPLES=OFF \
                         -D BUILD_DOCS=OFF \
@@ -57,7 +57,7 @@ pipeline {
                         -D ENABLE_PERF_TESTS=ON \
                         -D WITH_EIGEN=ON \
                         -D CMAKE_INSTALL_PREFIX=./install \
-                        -D CMAKE_TOOLCHAIN_FILE=../../perf/toolchain-riscv64.cmake \
+                        -D CMAKE_TOOLCHAIN_FILE=../../toolchain-riscv64.cmake \
                         -D BUILD_TESTS=ON \
                         -D BUILD_EXAMPLES=OFF \
                         -D BUILD_DOCS=OFF \
@@ -158,11 +158,11 @@ pipeline {
                 label 'master'
             }
             steps {
-                sh 'python3 ./perf/test_report.py'
+                sh 'python3 test_report.py'
                 publishHTML (target : [allowMissing: false,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
-                reportDir: 'output',
+                reportDir: './',
                 reportFiles: 'test_report.html',
                 reportName: 'Test Report'])
             }
