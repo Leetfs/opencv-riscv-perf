@@ -52,12 +52,12 @@ def compare_reports(rv_file, rvv_file, group_name):
                     rvv_time = float(rvv_test["time"].replace("s", ""))
 
                     # **RV 和 RVV CPU 统计数据**
-                    rv_samples = int(rv_test["samples"])
-                    rvv_samples = int(rvv_test["samples"])
-                    rv_mean = float(rv_test["mean"])
-                    rvv_mean = float(rvv_test["mean"])
-                    rv_median = float(rv_test["median"])
-                    rvv_median = float(rvv_test["median"])
+                    rv_stddev = int(rv_test["stddev"])
+                    rvv_stddev = int(rvv_test["stddev"])
+                    rv_mean = int(rv_test["mean"])
+                    rvv_mean = int(rvv_test["mean"])
+                    rv_median = int(rv_test["median"])
+                    rvv_median = int(rvv_test["median"])
 
                     # **性能提升计算**
                     # RVV 加速时，应保证 speedup 计算出的值为正数
@@ -75,8 +75,8 @@ def compare_reports(rv_file, rvv_file, group_name):
                         "rv_time": rv_time,
                         "rvv_time": rvv_time,
                         "speedup": speedup,
-                        "rv_samples": rv_samples,
-                        "rvv_samples": rvv_samples,
+                        "rv_stddev": rv_stddev,
+                        "rvv_stddev": rvv_stddev,
                         "rv_mean": rv_mean,
                         "rvv_mean": rvv_mean,
                         "rv_median": rv_median,
@@ -116,7 +116,7 @@ def generate_html(comparisons, output_path="test_report.html"):
     </head>
     <body>
         <h1>OpenCV RISC-V Vector 性能对比报告</h1>
-        <p>采样次数: 30</p>
+        <p>采样次数: 50</p>
     """
 
     # **按组排序，确保测试集按类别正确显示**
@@ -135,6 +135,8 @@ def generate_html(comparisons, output_path="test_report.html"):
                 <th>测试用例</th>
                 <th>RV 时间 (s)</th>
                 <th>RVV 时间 (s)</th>
+                <th>RV 标准差</th>
+                <th>RVV 标准差</th>
                 <th>RV 平均</th>
                 <th>RVV 平均</th>
                 <th>RV 中位数</th>
@@ -150,10 +152,12 @@ def generate_html(comparisons, output_path="test_report.html"):
                 <td>{test['name']}</td>
                 <td>{test['rv_time']:.3f}</td>
                 <td>{test['rvv_time']:.3f}</td>
-                <td>{test['rv_mean']:.0f}</td>
-                <td>{test['rvv_mean']:.0f}</td>
-                <td>{test['rv_median']:.0f}</td>
-                <td>{test['rvv_median']:.0f}</td>
+                <td>{test['rv_stddev']}</td>
+                <td>{test['rvv_stddev']}</td>
+                <td>{test['rv_mean']}</td>
+                <td>{test['rvv_mean']}</td>
+                <td>{test['rv_median']}</td>
+                <td>{test['rvv_median']}</td>
                 <td>{test['speedup']:.2f}%</td>
             </tr>
             """

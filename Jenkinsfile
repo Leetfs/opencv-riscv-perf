@@ -123,12 +123,12 @@ pipeline {
                         cd ./opencv/build/bin/
                         
                         chmod +x opencv_perf_core
-                        ./opencv_perf_core --gtest_filter="*Abs*" --perf_force_samples=30 --gtest_output=json:../../../output/RV_core_Abs_test_report.json
-                        ./opencv_perf_core --gtest_filter="*Mul*" --perf_force_samples=30 --gtest_output=json:../../../output/RV_core_Mul_test_report.json
+                        ./opencv_perf_core --gtest_filter="*Abs*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_core_Abs_test_report.json
+                        ./opencv_perf_core --gtest_filter="*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_core_Mul_test_report.json
                         
                         chmod +x opencv_perf_imgproc
-                        ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_force_samples=30 --gtest_output=json:../../../output/RV_imgproc_Resize_test_report.json
-                        ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_force_samples=30 --gtest_output=json:../../../output/RV_imgproc_Bilateral_test_report.json
+                        ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_Resize_test_report.json
+                        ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_Bilateral_test_report.json
                     '''
                 }
             }
@@ -144,12 +144,12 @@ pipeline {
                         cd ./opencv/build-vector/bin/
                         
                         chmod +x opencv_perf_core
-                        ./opencv_perf_core --gtest_filter="*Abs*" --perf_force_samples=30 --gtest_output=json:../../../output/RVV_core_Abs_test_report.json
-                        ./opencv_perf_core --gtest_filter="*Mul*" --perf_force_samples=30 --gtest_output=json:../../../output/RVV_core_Mul_test_report.json
+                        ./opencv_perf_core --gtest_filter="*Abs*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_core_Abs_test_report.json
+                        ./opencv_perf_core --gtest_filter="*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_core_Mul_test_report.json
                         
                         chmod +x opencv_perf_imgproc
-                        ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_force_samples=30 --gtest_output=json:../../../output/RVV_imgproc_Resize_test_report.json
-                        ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_force_samples=30 --gtest_output=json:../../../output/RVV_imgproc_Bilateral_test_report.json
+                        ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_Resize_test_report.json
+                        ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_Bilateral_test_report.json
                     '''
                 }
             }
