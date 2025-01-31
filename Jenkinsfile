@@ -6,10 +6,8 @@ pipeline {
                 label 'master'
             }
             steps {
-                script {
-                    // 清空工作区
-                    deleteDir()
-                }
+                // 清空工作区
+                deleteDir()
             }
         }
         stage('Clone OpenCV') {
@@ -17,10 +15,8 @@ pipeline {
                 label 'master'
             }
             steps {
-                script {
-                    sh 'git clone https://github.mtftm.com/opencv/opencv.git ./opencv'
-                    sh 'git clone https://github.mtftm.com/Leetfs/opencv-riscv-perf.git ./perf'
-                }
+                sh 'git clone https://github.mtftm.com/opencv/opencv.git ./opencv'
+                sh 'git clone https://github.mtftm.com/Leetfs/opencv-riscv-perf.git ./perf'
             }
         }
 
@@ -29,9 +25,7 @@ pipeline {
                 label 'master'
             }
             steps {
-                script {
-                    // 配置交叉编译工具链并开始构建
-                    sh '''
+                sh '''
                         cd ./opencv && mkdir build-vector && cd build-vector
                         cmake -D CMAKE_BUILD_TYPE=Release \
                         -D CMAKE_CXX_FLAGS="-static -O3 -march=rv64imafdcv" \
@@ -47,7 +41,6 @@ pipeline {
                         -D BUILD_opencv_imgproc=ON ..
                         make opencv_perf_core opencv_perf_imgproc -j $(nproc)
                     '''
-                }
             }
         }
         
@@ -56,9 +49,7 @@ pipeline {
                 label 'master'
             }
             steps {
-                script {
-                    // 配置交叉编译工具链并开始构建
-                    sh '''
+                sh '''
                         cd ./opencv && mkdir build && cd build
                         cmake -D CMAKE_BUILD_TYPE=Release \
                         -D CMAKE_CXX_FLAGS="-static -O3 -march=rv64imafdc" \
@@ -74,18 +65,15 @@ pipeline {
                         -D BUILD_opencv_imgproc=ON ..
                         make opencv_perf_core opencv_perf_imgproc -j $(nproc)
                     '''
-                }
             }
         }
         
-        stage('stash') {
+        stage('stash buildFiles') {
             agent {
                 label 'master'
             }
             steps {
-                script {
-                    stash name: 'buildFiles', includes: 'opencv/build/bin/*,opencv/build-vector/bin/*'
-                }
+                stash name: 'buildFiles', includes: 'opencv/build/bin/*,opencv/build-vector/bin/*'
             }
         }
         
@@ -94,21 +82,17 @@ pipeline {
                 label 'RVV'
             }
             steps {
-                script {
-                    // 清空工作区
-                    deleteDir()
-                }
+                // 清空工作区
+                deleteDir()
             }
         }
         
-        stage('unstash') {
+        stage('unstash buildFiles') {
             agent {
                 label 'RVV'
             }
             steps {
-                script {
-                    unstash 'buildFiles'
-                }
+                unstash 'buildFiles'
             }
         }
         
@@ -117,8 +101,7 @@ pipeline {
                 label 'RVV'
             }
             steps {
-                script {
-                    sh '''
+                sh '''
                         mkdir output
                         cd ./opencv/build/bin/
                         
@@ -130,7 +113,6 @@ pipeline {
                         ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_Resize_test_report.json
                         ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_Bilateral_test_report.json
                     '''
-                }
             }
         }
         
@@ -139,8 +121,7 @@ pipeline {
                 label 'RVV'
             }
             steps {
-                script {
-                    sh '''
+                sh '''
                         cd ./opencv/build-vector/bin/
                         
                         chmod +x opencv_perf_core
@@ -151,8 +132,41 @@ pipeline {
                         ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_Resize_test_report.json
                         ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_Bilateral_test_report.json
                     '''
-                }
             }
         }
+
+        stage('stash output') {
+            agent {
+                label 'RVV'
+            }
+            steps {
+                stash name: 'output', includes: 'output/*'
+            }
+        }
+
+        stage('unstash output') {
+            agent {
+                label 'master'
+            }
+            steps {
+                unstash 'output'
+            }
+        }
+
+        stage('Generate Test Report') {
+            agent {
+                label 'master'
+            }
+            steps {
+                sh 'python3 ./perf/test_report.py'
+                publishHTML (target : [allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'output',
+                reportFiles: 'test_report.html',
+                reportName: 'Test Report'])
+            }
+        }
+        
     }
 }

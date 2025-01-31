@@ -89,7 +89,7 @@ def compare_reports(rv_file, rvv_file, group_name):
 
     return comparison_results
 
-def generate_html(comparisons, output_path="test_report.html"):
+def generate_html(comparisons, output_path="../output/test_report.html"):
     """
     生成 HTML 格式的性能对比报告
 
@@ -101,7 +101,7 @@ def generate_html(comparisons, output_path="test_report.html"):
     <!DOCTYPE html>
     <html>
     <head>
-        <title>OpenCV RISC-V Vector 性能对比报告</title>
+        <title>OpenCV RISC-V Vector 性能测试报告</title>
         <style>
             body { font-family: Arial, sans-serif; padding: 20px; }
             h1 { text-align: center; }
@@ -115,7 +115,7 @@ def generate_html(comparisons, output_path="test_report.html"):
         </style>
     </head>
     <body>
-        <h1>OpenCV RISC-V Vector 性能对比报告</h1>
+        <h1>OpenCV RISC-V Vector 性能测试报告</h1>
         <p>采样次数: 50</p>
     """
 
@@ -176,10 +176,10 @@ def generate_comparison_report():
     生成完整的 OpenCV 性能对比报告
     """
     test_report_pairs = [
-        ("./output/RV_core_Abs_test_report.json", "./output/RVV_core_Abs_test_report.json", "opencv_perf_core"),
-        ("./output/RV_core_Mul_test_report.json", "./output/RVV_core_Mul_test_report.json", "opencv_perf_core"),
-        ("./output/RV_imgproc_Bilateral_test_report.json", "./output/RVV_imgproc_Bilateral_test_report.json", "opencv_perf_imgproc"),
-        ("./output/RV_imgproc_Resize_test_report.json", "./output/RVV_imgproc_Resize_test_report.json", "opencv_perf_imgproc"),
+        ("../output/RV_core_Abs_test_report.json", "../output/RVV_core_Abs_test_report.json", "opencv_perf_core"),
+        ("../output/RV_core_Mul_test_report.json", "../output/RVV_core_Mul_test_report.json", "opencv_perf_core"),
+        ("./output/RV_imgproc_Bilateral_test_report.json", "../output/RVV_imgproc_Bilateral_test_report.json", "opencv_perf_imgproc"),
+        ("../output/RV_imgproc_Resize_test_report.json", "../output/RVV_imgproc_Resize_test_report.json", "opencv_perf_imgproc"),
     ]
 
     all_comparisons = []
