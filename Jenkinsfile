@@ -15,8 +15,8 @@ pipeline {
                 label 'master'
             }
             steps {
-                sh 'git clone https://github.mtftm.com/opencv/opencv.git ./opencv'
-                // sh 'git clone https://github.mtftm.com/Leetfs/opencv-riscv-perf.git ./perf'
+                sh 'git clone https://github.com/opencv/opencv.git ./opencv'
+                // sh 'git clone https://github.com/Leetfs/opencv-riscv-perf.git ./perf'
             }
         }
 
