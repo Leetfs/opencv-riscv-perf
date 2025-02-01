@@ -6,8 +6,8 @@ node('master') { // 指定 master 节点
     }
 
     stage('Clone OpenCV') {
-        sh 'git clone https://github.com/opencv/opencv.git ./opencv'
-        // sh 'git clone https://github.com/Leetfs/opencv-riscv-perf.git ./perf'
+        sh 'git clone https://github.mtftm.com/opencv/opencv.git ./opencv'
+        sh 'git clone https://github.com/Leetfs/opencv-riscv-perf.git ./perf'
     }
 
     stage('Build OpenCV for RISC-V Vector') {
@@ -19,7 +19,7 @@ node('master') { // 指定 master 节点
                 -D ENABLE_PERF_TESTS=ON \
                 -D WITH_EIGEN=ON \
                 -D CMAKE_INSTALL_PREFIX=./install \
-                -D CMAKE_TOOLCHAIN_FILE=../../toolchain-riscv64.cmake \
+                -D CMAKE_TOOLCHAIN_FILE=../../perf/toolchain-riscv64.cmake \
                 -D BUILD_TESTS=ON \
                 -D BUILD_EXAMPLES=OFF \
                 -D BUILD_DOCS=OFF \
@@ -38,7 +38,7 @@ node('master') { // 指定 master 节点
                 -D ENABLE_PERF_TESTS=ON \
                 -D WITH_EIGEN=ON \
                 -D CMAKE_INSTALL_PREFIX=./install \
-                -D CMAKE_TOOLCHAIN_FILE=../../toolchain-riscv64.cmake \
+                -D CMAKE_TOOLCHAIN_FILE=../../perf/toolchain-riscv64.cmake \
                 -D BUILD_TESTS=ON \
                 -D BUILD_EXAMPLES=OFF \
                 -D BUILD_DOCS=OFF \
@@ -105,7 +105,7 @@ node('master') { // 指定 master 节点
     }
 
     stage('Generate Test Report') {
-        sh 'python3 test_report.py'
+        sh 'python3 ./perf/test_report.py'
         publishHTML (target : [allowMissing: false,
         alwaysLinkToLastBuild: true,
         keepAll: true,
