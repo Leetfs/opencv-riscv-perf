@@ -105,7 +105,10 @@ node('master') { // 指定 master 节点
     }
 
     stage('Generate Test Report') {
-        sh 'python3 ./perf/test_report.py'
+        sh '''
+            cd perf
+            python3 test_report.py
+        '''
         publishHTML (target : [allowMissing: false,
         alwaysLinkToLastBuild: true,
         keepAll: true,
@@ -113,5 +116,6 @@ node('master') { // 指定 master 节点
         reportFiles: 'test_report.html',
         reportName: 'TestReport',
         reportTitles: '测试报告'])
+        
     }
 }
