@@ -5,9 +5,8 @@
 ## 目录结构
 
 - `./jenkins-docker` : dockerfile / docker compose 配置文件
-- `output_sample` : 本地测试用的样本数据
+- `output_sample` : 用于调试 python 脚本的样本数据
 - `Jenkinsfile` : Jenkins pipeline 文件
-- `test_report_sample.html` : html 测试报告样例
 - `test_report.py` : 自动处理测试结果生成测试报告的代码
 - `test.md` : 前期手测的数据集（没啥用）
 - `toolchain-riscv64.cmake` : cmake 交叉编译工具链配置文件
