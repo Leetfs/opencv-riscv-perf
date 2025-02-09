@@ -53,7 +53,7 @@ node('master') { // 指定 master 节点
     }
 }
 
-node('RVV') { // 指定 RVV 节点
+node {
     
     stage('Perf Test') {
         parallel(
