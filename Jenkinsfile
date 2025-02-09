@@ -49,7 +49,8 @@ node('master') { // 指定 master 节点
     }
     
     stage('stash buildFiles') {
-        stash name: 'buildFiles', includes: 'opencv/build/bin/*,opencv/build-vector/bin/*'
+        stash name: 'buildFiles-core', includes: 'opencv/build/bin/opencv_perf_core,opencv/build-vector/bin/opencv_perf_core'
+        stash name: 'buildFiles-imgproc', includes: 'opencv/build/bin/opencv_perf_imgproc,opencv/build-vector/bin/opencv_perf_imgproc'
     }
 }
 
@@ -65,8 +66,8 @@ node {
                     }
 
                     // 下载构建文件
-                    stage('unstash buildFiles') {
-                        unstash 'buildFiles'
+                    stage('unstash buildFiles-core') {
+                        unstash 'buildFiles-core'
                     }
 
                     // RV Core Perf Test
@@ -102,8 +103,8 @@ node {
                     }
 
                     // 下载构建文件
-                    stage('unstash buildFiles') {
-                        unstash 'buildFiles'
+                    stage('unstash buildFiles-imgproc') {
+                        unstash 'buildFiles-imgproc'
                     }
 
                     // RV Imgproc Perf Test
