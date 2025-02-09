@@ -54,54 +54,59 @@ node('master') { // 指定 master 节点
 }
 
 node('RVV') { // 指定 RVV 节点
+    
+    stage('Perf Test') {
+        parallel(
+            "Core Perf Test": {
+                deleteDir() // 清空工作区
+                unstash 'buildFiles' // 下载构建文件
 
-    stage('Clean RVV Workspace') {
-        // 清空工作区
-        deleteDir()
-    }
-    
-    stage('unstash buildFiles') {
-        unstash 'buildFiles'
-    }
-    
-    stage('RV Perf Test') {
-        sh '''
+                // RV Core Perf Test
+                sh '''
                 mkdir output
                 cd ./opencv/build/bin/
-                
                 chmod +x opencv_perf_core
-                ./opencv_perf_core --gtest_filter="*Abs*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_core_Abs_test_report.json
-                ./opencv_perf_core --gtest_filter="*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_core_Mul_test_report.json
-                
-                chmod +x opencv_perf_imgproc
-                ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_Resize_test_report.json
-                ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_Bilateral_test_report.json
-            '''
-    }
-    
-    stage('RVV Perf Test') {
-        sh '''
-                cd ./opencv/build-vector/bin/
-                
-                chmod +x opencv_perf_core
-                ./opencv_perf_core --gtest_filter="*Abs*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_core_Abs_test_report.json
-                ./opencv_perf_core --gtest_filter="*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_core_Mul_test_report.json
-                
-                chmod +x opencv_perf_imgproc
-                ./opencv_perf_imgproc --gtest_filter="*Resize*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_Resize_test_report.json
-                ./opencv_perf_imgproc --gtest_filter="*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_Bilateral_test_report.json
-            '''
-    }
+                ./opencv_perf_core --gtest_filter="*Abs*:*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_core_test_report.json
+                '''
 
-    stage('stash output') {
-        stash name: 'output', includes: 'output/*'
+                // RVV Core Perf Test
+                sh '''
+                cd ./opencv/build-vector/bin/
+                chmod +x opencv_perf_core
+                ./opencv_perf_core --gtest_filter="*Abs*:*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_core_test_report.json
+                '''
+                stash name: 'core', includes: 'output/*' // 保存测试结果
+            },
+            "Imgproc Perf Test": {
+                deleteDir() // 清空工作区
+                unstash 'buildFiles' // 下载构建文件
+
+                // RV Imgproc Perf Test
+                sh '''
+                mkdir output
+                cd ./opencv/build/bin/
+                chmod +x opencv_perf_imgproc
+                ./opencv_perf_imgproc --gtest_filter="*Resize*:*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_test_report.json
+                '''
+
+                // RVV Imgproc Perf Test
+                sh '''
+                cd ./opencv/build-vector/bin/
+                chmod +x opencv_perf_imgproc
+                ./opencv_perf_imgproc --gtest_filter="*Resize*:*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_test_report.json
+                '''
+
+                stash name: 'imgproc', includes: 'output/*' // 保存测试结果
+            }
+        )
     }
 }
 
 node('master') { // 指定 master 节点
 
     stage('unstash output') {
-        unstash 'output'
+        unstash 'core'
+        unstash 'imgproc'
     }
 
     stage('Generate Test Report') {

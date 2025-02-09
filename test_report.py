@@ -176,11 +176,14 @@ def generate_comparison_report():
     生成完整的 OpenCV 性能对比报告
     """
     test_report_pairs = [
-        ("../output/RV_core_Abs_test_report.json", "../output/RVV_core_Abs_test_report.json", "opencv_perf_core"),
-        ("../output/RV_core_Mul_test_report.json", "../output/RVV_core_Mul_test_report.json", "opencv_perf_core"),
-        ("../output/RV_imgproc_Bilateral_test_report.json", "../output/RVV_imgproc_Bilateral_test_report.json", "opencv_perf_imgproc"),
-        ("../output/RV_imgproc_Resize_test_report.json", "../output/RVV_imgproc_Resize_test_report.json", "opencv_perf_imgproc"),
+        ("../core/RV_core_test_report.json", "../core/RVV_core_test_report.json", "opencv_perf_core"),
+        ("../imgproc/RV_imgproc_test_report.json", "../imgproc/RVV_imgproc_test_report.json", "opencv_perf_imgproc"),
     ]
+
+    # test_report_pairs = [
+    #     ("./output_sample/RV_core_Abs_test_report.json", "./output_sample/RVV_core_Abs_test_report.json", "opencv_perf_core"),
+    #     ("./output_sample/RV_imgproc_Bilateral_test_report.json", "./output_sample/RVV_imgproc_Bilateral_test_report.json", "opencv_perf_imgproc"),
+    # ]
 
     all_comparisons = []
     for rv_file, rvv_file, group in test_report_pairs:
