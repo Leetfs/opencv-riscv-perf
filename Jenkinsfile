@@ -6,7 +6,7 @@ node('master') { // 指定 master 节点
     }
 
     stage('Clone OpenCV') {
-        sh 'git clone https://github.mtftm.com/opencv/opencv.git ./opencv'
+        sh 'git clone https://github.mtftm.com/Leetfs/opencv.git ./opencv'
         sh 'git clone https://github.mtftm.com/Leetfs/opencv-riscv-perf.git ./perf'
     }
 
