@@ -58,45 +58,77 @@ node('RVV') { // 指定 RVV 节点
     stage('Perf Test') {
         parallel(
             "Core Perf Test": {
-                deleteDir() // 清空工作区
-                unstash 'buildFiles' // 下载构建文件
+                node('RVV') {
+                    // 清空工作区
+                    stage('Clean Workspace') {
+                        deleteDir()
+                    }
 
-                // RV Core Perf Test
-                sh '''
-                mkdir output
-                cd ./opencv/build/bin/
-                chmod +x opencv_perf_core
-                ./opencv_perf_core --gtest_filter="*Abs*:*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_core_test_report.json
-                '''
+                    // 下载构建文件
+                    stage('unstash buildFiles') {
+                        unstash 'buildFiles'
+                    }
 
-                // RVV Core Perf Test
-                sh '''
-                cd ./opencv/build-vector/bin/
-                chmod +x opencv_perf_core
-                ./opencv_perf_core --gtest_filter="*Abs*:*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_core_test_report.json
-                '''
-                stash name: 'core', includes: 'output/*' // 保存测试结果
+                    // RV Core Perf Test
+                    stage('RV Core Perf Test') {
+                        sh '''
+                        mkdir -p output
+                        cd ./opencv/build/bin/
+                        chmod +x opencv_perf_core
+                        ./opencv_perf_core --gtest_filter="*Abs*:*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_core_test_report.json
+                        '''
+                    }
+
+                    // RVV Core Perf Test
+                    stage('RVV Core Perf Test') {
+                        sh '''
+                        cd ./opencv/build-vector/bin/
+                        chmod +x opencv_perf_core
+                        ./opencv_perf_core --gtest_filter="*Abs*:*Mul*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_core_test_report.json
+                        '''
+                    }
+
+                    stage('stash core test report') {
+                    stash name: 'core', includes: 'output/*'
+                    }
+                }
+                
             },
             "Imgproc Perf Test": {
-                deleteDir() // 清空工作区
-                unstash 'buildFiles' // 下载构建文件
+                node('RVV') {
+                    // 清空工作区
+                    stage('Clean Workspace') {
+                        deleteDir()
+                    }
 
-                // RV Imgproc Perf Test
-                sh '''
-                mkdir output
-                cd ./opencv/build/bin/
-                chmod +x opencv_perf_imgproc
-                ./opencv_perf_imgproc --gtest_filter="*Resize*:*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_test_report.json
-                '''
+                    // 下载构建文件
+                    stage('unstash buildFiles') {
+                        unstash 'buildFiles'
+                    }
 
-                // RVV Imgproc Perf Test
-                sh '''
-                cd ./opencv/build-vector/bin/
-                chmod +x opencv_perf_imgproc
-                ./opencv_perf_imgproc --gtest_filter="*Resize*:*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_test_report.json
-                '''
+                    // RV Imgproc Perf Test
+                    stage('RV Imgproc Perf Test') {
+                        sh '''
+                        mkdir -p output
+                        cd ./opencv/build/bin/
+                        chmod +x opencv_perf_imgproc
+                        ./opencv_perf_imgproc --gtest_filter="*Resize*:*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RV_imgproc_test_report.json
+                        '''
+                    }
 
-                stash name: 'imgproc', includes: 'output/*' // 保存测试结果
+                    // RVV Imgproc Perf Test
+                    stage('RVV Imgproc Perf Test') {
+                        sh '''
+                        cd ./opencv/build-vector/bin/
+                        chmod +x opencv_perf_imgproc
+                        ./opencv_perf_imgproc --gtest_filter="*Resize*:*Bilateral*" --perf_min_samples=50 --perf_force_samples=50 --gtest_output=json:../../../output/RVV_imgproc_test_report.json
+                        '''
+                    }
+
+                    stage('stash imgproc test report') {
+                    stash name: 'imgproc', includes: 'output/*'
+                    }
+                }
             }
         )
     }
