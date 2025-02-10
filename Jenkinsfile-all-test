@@ -127,9 +127,17 @@ node {
                         sh '''
                         mkdir -p opencv/build/bin/cv/imgproc
                         mkdir -p opencv/build-vector/bin/cv/imgproc
+
                         mkdir -p opencv/build/bin/gpu/opticalflow/
+                        mkdir -p opencv/build-vector/bin/gpu/opticalflow/
+
+                        mkdir -p opencv/build/bin/cv/shared/
                         mkdir -p opencv/build-vector/bin/cv/shared/
+
                         mkdir -p opencv/build/bin/cv/detectors_descriptors_evaluation/images_datasets/leuven/
+                        mkdir -p opencv/build-vector/bin/cv/detectors_descriptors_evaluation/images_datasets/leuven/
+
+                        mkdir -p opencv/build/bin/cv/optflow/
                         mkdir -p opencv/build-vector/bin/cv/optflow/
 
                         cp -r opencv/samples/data/* opencv/build/bin/cv/imgproc
