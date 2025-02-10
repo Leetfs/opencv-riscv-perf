@@ -128,9 +128,6 @@ node {
                         mkdir -p opencv/build/bin/cv/imgproc
                         mkdir -p opencv/build-vector/bin/cv/imgproc
 
-                        mkdir -p opencv/build/bin/gpu/opticalflow/
-                        mkdir -p opencv/build-vector/bin/gpu/opticalflow/
-
                         mkdir -p opencv/build/bin/cv/shared/
                         mkdir -p opencv/build-vector/bin/cv/shared/
 
@@ -143,9 +140,6 @@ node {
                         cp -r opencv/samples/data/* opencv/build/bin/cv/imgproc
                         cp -r opencv/samples/data/* opencv/build-vector/bin/cv/imgproc
 
-                        cp opencv/samples/data/rubberwhale1.png opencv/build/bin/gpu/opticalflow/
-                        cp opencv/samples/data/rubberwhale1.png opencv/build-vector/bin/gpu/opticalflow/
-
                         cp opencv/samples/data/pic5.png opencv/build/bin/cv/shared/
                         cp opencv/samples/data/pic5.png opencv/build-vector/bin/cv/shared/
 
@@ -157,9 +151,6 @@ node {
 
                         cp opencv/samples/data/fruits.png opencv/build/bin/cv/shared/
                         cp opencv/samples/data/fruits.png opencv/build-vector/bin/cv/shared/
-
-                        cp opencv/samples/data/RubberWhale1.png opencv/build/bin/cv/optflow/
-                        cp opencv/samples/data/RubberWhale1.png opencv/build-vector/bin/cv/optflow/
                         '''
                     }
 
