@@ -51,6 +51,7 @@ node('master') { // 指定 master 节点
     stage('stash buildFiles') {
         stash name: 'buildFiles-core', includes: 'opencv/build/bin/opencv_perf_core,opencv/build-vector/bin/opencv_perf_core'
         stash name: 'buildFiles-imgproc', includes: 'opencv/build/bin/opencv_perf_imgproc,opencv/build-vector/bin/opencv_perf_imgproc'
+        stash name: 'samples', includes: 'opencv/samples/data/*'
     }
 }
 
@@ -105,6 +106,17 @@ node {
                     // 下载构建文件
                     stage('unstash buildFiles-imgproc') {
                         unstash 'buildFiles-imgproc'
+                        unstash 'samples'
+                    }
+
+                    // 配置测试依赖
+                    stage('Set up test files') {
+                        sh '''
+                        mkdir -p opencv/build/bin/cv/imgproc
+                        mkdir -p opencv/build-vector/bin/cv/imgproc
+                        cp -r opencv/samples/data/* opencv/build/bin/cv/imgproc
+                        cp -r opencv/samples/data/* opencv/build-vector/bin/cv/imgproc
+                        '''
                     }
 
                     // RV Imgproc Perf Test
